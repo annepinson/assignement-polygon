@@ -97,6 +97,13 @@ app.post(`/user`, async (req, res) => {
   res.json(result)
 })
 
+app.post(`/session`, async (req, res) => {
+  const result = await prisma.user.findUnique({
+    where: {email: req.body.email}
+  })
+  res.json(result)
+})
+
 const server = app.listen(3001, () =>
   console.log(
     '🚀 Server ready at: http://localhost:3001',

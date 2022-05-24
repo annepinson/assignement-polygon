@@ -1,13 +1,16 @@
-import React from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { signOut, useSession } from 'next-auth/react';
 
 const Header: React.FC = () => {
-  const router = useRouter()
-  const isActive: (pathname: string) => boolean =
-    pathname => router.pathname === pathname
+  const router = useRouter();
+  const isActive: (pathname: string) => boolean = (pathname) =>
+    router.pathname === pathname;
 
-  return(
+  const { data: session } = useSession();
+
+  return (
     <nav>
       <div className="left">
         <Link href="/">
@@ -20,9 +23,13 @@ const Header: React.FC = () => {
         </Link>
       </div>
       <div className="right">
-        <Link href="/signup">
-          <a data-active={isActive('/signup')}>Signup</a>
-        </Link>
+        {session ? (
+          <button onClick={() => signOut()}>SignOut</button>
+        ) : (
+          <Link href="/signup">
+            <a data-active={isActive('/signup')}>Signup</a>
+          </Link>
+        )}
         <Link href="/create">
           <a data-active={isActive('/create')}>+ Create draft</a>
         </Link>
@@ -63,7 +70,7 @@ const Header: React.FC = () => {
         }
       `}</style>
     </nav>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
