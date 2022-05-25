@@ -143,6 +143,9 @@ You can also access the REST API of the API server directly. It is running [`loc
 - `/api/post/:id`: Fetch a single post by its `id`
 - `/api/feed`: Fetch all _published_ posts
 - `/api/filterPosts?searchString={searchString}`: Filter posts by `title` or `content`
+- `/api/session`: fetch an user by his email 
+  - Body:
+    - `email: String` (required): The email address of the user we search for
 
 ### `POST`
 
@@ -154,7 +157,7 @@ You can also access the REST API of the API server directly. It is running [`loc
 - `/api/user`: Create a new user
   - Body:
     - `email: String` (required): The email address of the user
-    - `name: String` (optional): The name of the user
+    - `name: String` (optional): The name of the user 
 
 ### `PUT`
 

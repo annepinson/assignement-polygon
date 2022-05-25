@@ -19,7 +19,7 @@ app.get('/drafts', async (req, res) => {
 app.get('/feed', async (req, res) => {
   const posts = await prisma.post.findMany({
     where: { published: true },
-    include: { author: true }
+    include: { author: true, comments: {include: {author: true}} }
   })
   res.json(posts)
 })
@@ -74,7 +74,7 @@ app.get(`/post/:id`, async (req, res) => {
     where: {
       id: Number(id),
     },
-    include: { author: true }
+    include: { author: true, comments: {include: {author: true}}},
   })
   res.json(post)
 })

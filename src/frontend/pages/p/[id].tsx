@@ -5,6 +5,8 @@ import Layout from '../../components/Layout';
 import Router from 'next/router';
 import { PostProps } from '../../components/Post';
 import Authentication from '../../components/Authentication';
+import { useSession } from 'next-auth/react';
+import Comment from '../../components/Comment';
 
 async function publish(id: number): Promise<void> {
   await fetch(`http://localhost:3001/publish/${id}`, {
@@ -25,6 +27,9 @@ const Post: React.FC<PostProps> = (props) => {
   if (!props.published) {
     title = `${title} (Draft)`;
   }
+  const { data: session } = useSession();
+  // An user can delete or publish a post if and only if he has written it.
+  const userIsAuthor = session?.user.email == props?.author?.email;
 
   return (
     <Layout>
@@ -33,10 +38,14 @@ const Post: React.FC<PostProps> = (props) => {
           <h2>{title}</h2>
           <p>By {props?.author?.name || 'Unknown author'}</p>
           <ReactMarkdown children={props.content} />
-          {!props.published && (
+          {!props.published && userIsAuthor && (
             <button onClick={() => publish(props.id)}>Publish</button>
           )}
-          <button onClick={() => destroy(props.id)}>Delete</button>
+          {userIsAuthor && (
+            <button onClick={() => destroy(props.id)}>Delete</button>
+          )}
+          {props.comments &&
+            props.comments.map((comment) => <Comment comment={comment} />)}
         </div>
         <style jsx>{`
           .page {
