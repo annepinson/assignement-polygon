@@ -17,7 +17,11 @@ const Comment: React.FC<{ comment: CommentProps }> = ({ comment }) => {
       <style jsx>{`
         div {
           color: inherit;
-          padding: 2rem;
+          padding: 1rem;
+          border: 2px solid #55555;
+          background-color: #e7e7e7;
+          margin: 2rem;
+          border-radius: 8px;
         }
       `}</style>
     </div>

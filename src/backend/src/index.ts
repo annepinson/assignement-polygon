@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import cors from 'cors'
 import express from 'express'
 
@@ -11,7 +11,7 @@ app.use(cors())
 app.get('/drafts', async (req, res) => {
   const posts = await prisma.post.findMany({
     where: { published: false },
-    include: { author: true }
+    include: { author: true, comments: true },
   })
   res.json(posts)
 })
@@ -100,6 +100,17 @@ app.post(`/user`, async (req, res) => {
 app.post(`/session`, async (req, res) => {
   const result = await prisma.user.findUnique({
     where: {email: req.body.email}
+  })
+  res.json(result)
+})
+
+app.post(`/comment`, async (req, res) => {
+  const { content, userEmail, postId } = req.body;
+  const dataCreateComment: Prisma.CommentCreateInput = {content: content,
+                                                        author: {connect: {email: userEmail}},
+                                                        post: {connect: {id: postId}}}
+  const result = await prisma.comment.create({
+    data: dataCreateComment
   })
   res.json(result)
 })
