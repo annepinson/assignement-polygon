@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import ReactMarkdown from 'react-markdown';
 import Comment from './Comment';
 import { useSession } from 'next-auth/react';
+import { trigger } from 'polyrhythm';
+import { WebsocketService } from './WebsocketService';
 
 export type PostProps = {
   id: number;
@@ -29,8 +31,10 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
   const [showComments, setShowComments] = useState(false);
   const [addComment, setAddComment] = useState(false);
   const [content, setContent] = useState('');
+  const [isTyping, setTyping] = useState(false);
   const { data: session } = useSession();
   const userEmail = session.user?.email;
+  const router = useRouter();
 
   const submitComment = async () => {
     try {
@@ -43,6 +47,7 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
       await Router.push('/');
       setAddComment(false);
       setContent('');
+      trigger(`message/create/${post.id}`);
     } catch (error) {
       console.error(error);
     }
@@ -81,7 +86,10 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
           <>
             <textarea
               cols={50}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => {
+                setContent(e.target.value);
+                trigger(`message/edit/${post.id}`);
+              }}
               placeholder="Your comment..."
               rows={8}
               value={content}
@@ -91,7 +99,21 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
             </button>
           </>
         )}
+        {isTyping && (
+          <div className="currently-typing-wrapper">
+            <div className="container-dot">
+              <span className="dot"></span>
+              <span className="dot"></span>
+              <span className="dot"></span>
+            </div>
+          </div>
+        )}
       </div>
+      <WebsocketService
+        postId={post.id}
+        setTyping={setTyping}
+        router={router}
+      />
       <style jsx>{`
         div {
           color: inherit;
@@ -115,9 +137,48 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
         }
 
         .button:hover {
-           background-color: #e7e7e7; 
-          }
+          background-color: #e7e7e7;
+        }
 
+        .currently-typing-wrapper {
+          background: #e6e6e6;
+          padding: 12px 28px;
+          display: inline-flex;
+          width: 20%;
+          flex-direction: row;
+          border-radius: 8px;
+          align-content: center;
+          justify-items: center;
+          height: 50px;
+        }
+
+        .container-dot {
+          padding-left: 15px;
+          display: inline-block;
+        }
+        .dot {
+          height: 10px;
+          width: 10px;
+          border-radius: 100%;
+          display: inline-block;
+          background-color: #b4b5b9;
+          animation: 1.2s typing-dot ease-in-out infinite;
+        }
+        .dot:nth-of-type(2) {
+          animation-delay: 0.15s;
+        }
+        .dot:nth-of-type(3) {
+          animation-delay: 0.25s;
+        }
+        @keyframes typing-dot {
+          15% {
+            transform: translateY(-35%);
+            opacity: 0.5;
+          }
+          30% {
+            transform: translateY(0%);
+            opacity: 1;
+          }
         }
       `}</style>
     </>

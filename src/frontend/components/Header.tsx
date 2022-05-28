@@ -24,14 +24,20 @@ const Header: React.FC = () => {
       </div>
       <div className="right">
         {session ? (
-          <button onClick={() => signOut()}>SignOut</button>
+          <button className="button" onClick={() => signOut()}>
+            SignOut
+          </button>
         ) : (
           <Link href="/signup">
-            <a data-active={isActive('/signup')}>Signup</a>
+            <a className="button" data-active={isActive('/signup')}>
+              Signup
+            </a>
           </Link>
         )}
         <Link href="/create">
-          <a data-active={isActive('/create')}>+ Create draft</a>
+          <a className="button" data-active={isActive('/create')}>
+            + Create draft
+          </a>
         </Link>
       </div>
       <style jsx>{`
@@ -47,12 +53,6 @@ const Header: React.FC = () => {
 
         a {
           text-decoration: none;
-          color: #000;
-          display: inline-block;
-        }
-
-        .left a[data-active='true'] {
-          color: gray;
         }
 
         a + a {
@@ -63,10 +63,20 @@ const Header: React.FC = () => {
           margin-left: auto;
         }
 
-        .right a {
-          border: 1px solid black;
-          padding: 0.5rem 1rem;
-          border-radius: 3px;
+        .button {
+          background-color: white;
+          color: black;
+          border: none;
+          padding: 12px 28px;
+          font-size: 16px;
+          border-radius: 4px;
+          border: 2px solid #e7e7e7;
+          margin: 1rem;
+          transition-duration: 0.4s;
+        }
+
+        .button:hover {
+          background-color: #e7e7e7;
         }
       `}</style>
     </nav>
