@@ -268,3 +268,23 @@ const userWithUpdatedProfile = await prisma.user.update({
 Once you have added a new endpoint to the API (e.g. `/api/profile` with `/POST`, `/PUT` and `GET` operations), you can start building a new UI component in React. It could e.g. be called `profile.tsx` and would be located in the `pages` directory.
 
 In the application code, you can access the new endpoint via `fetch` operations and populate the UI with the data you receive from the API calls.
+
+## New features
+1. Authentication
+
+Now the clients can be authenticated with their email address. Thus users can only post messages in their own name, and they can only publish or delete a post if it is one of their own.
+This solves the problem of messages posted with an invalid email address, because to access this page you must be authenticated with a valid email address. 
+For the moment there is no password managed by the database, and only the email address allows to authenticate. <br>
+
+There are still several things that can be done to develop this feature, such as seeing only your own drafts. <br> <br>
+
+2. Comments
+
+Now users can post comments under posts. These comments are posted according to their username, so they need to be authenticated for that. A user can only post a comment on a post already published.
+
+A user can write a post comment from the main page with all posts, as well as view previously published comments, or from the post specific page.<br> <br>
+
+3. Typing indicators
+
+On the page with all the posts, a user can see if another connected user is writing a comment to a post, which appears as a bubble with 3 small animated dots.
+This animation disappears when the other user has stopped writing for more than 5 seconds, and when the comment is sent, the page is reloaded so that the comment appears.

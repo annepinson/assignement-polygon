@@ -24,7 +24,7 @@ export const WebsocketService = (props: WebsocketServiceProps) => {
         props.setTyping(true);
         setTimeout(() => {
           props.setTyping(false);
-        }, 10000);
+        }, 5000);
       } else if (
         type.startsWith('message/from/') &&
         postId == props.postId &&
